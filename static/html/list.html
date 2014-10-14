@@ -1,0 +1,115 @@
+<div class="container top-padding">
+  <div class="row">
+    <div class="col-lg-9 col-md-12">
+      <ul class="nav nav-tabs hidden-sm hidden-xs">
+        <li 
+          ng-repeat="topic in notSorted(topics)" 
+          ng-class="{active: topic==currentTopic}">
+          <a
+            class="capital-letter" 
+            href="/topics/{{topic}}/0/">
+            {{ topic }}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-lg-3 col-md-4">
+      <form ng-submit="submit()">
+        <input 
+          class="form-control top-margin" 
+          ng-class="{highlighted: !currentTopic}"
+          type="text" 
+          ng-model="query"
+          placeholder="search for news...">
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="nav nav-pills nav-stacked hidden-md hidden-lg">
+        <li 
+          ng-repeat="topic in notSorted(topics)" 
+          ng-class="{active: topic==currentTopic}">
+          <a
+            class="capital-letter" 
+            href="/topics/{{topic}}/0/{{query}}">
+            {{ topic }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- section displaying the results + pagination -->
+  <section ng-hide="isError || isWaiting || results.length==0">
+    <div class="row">
+      <div class="col-md-12 feed top-margin">
+          <div class="col-lg-6 card-wrapper" ng-repeat="story in results">
+            <div class="card">
+              <h4 class="title">
+                <span ng-bind-html="story.titleNoFormatting"></span>
+                - <small>{{ story.publisher }}</small>
+              </h4>
+              <table class="layout">
+                <tr>
+                  <td class="big-column">
+                    <p ng-bind-html="story.content"></p>
+                  </td>
+                  <td class="small-column" ng-show="story.image.url">
+                    <img src="{{story.image.url}}" class="image">
+                </tr>
+              </table>
+              <a href="{{story.unescapedUrl}}">{{story.unescapedUrl}}</a>
+              <small class="date" ng-bind-html="story.publishedDate"></small>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="pagination">
+          <li 
+            ng-repeat="page in pages"
+            ng-class="{active: start==page.start}">
+            <a href="{{getPageUrl(page.start)}}">
+              {{page.label}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- section displaying the loading indicator -->
+  <section ng-show="isWaiting">
+    <div class="row">
+      <div class="col-md-12 loading-wrapper">
+        <div class="spinner loading-child"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- section displaying the error message -->
+  <section ng-show="isError">
+    <div class="row">
+      <div class="col-md-12 loading-wrapper">
+        <div class="loading-child">
+          <h2>A wild error appeared. Please try again later!</h2>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- section to display when there are no results -->
+  <section ng-show="!isWaiting && results.length==0">
+    <div class="row">
+      <div class="col-md-12 loading-wrapper">
+        <div class="loading-child">
+          <h2>
+            There are no results for your search. Please try something else!
+          </h2>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
