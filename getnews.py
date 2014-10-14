@@ -11,6 +11,10 @@ class ProxyHandler(websocket.WebSocketHandler):
     pass
   
   def on_message(self, message):
+    # message added to keep alive the heroku connection
+    if message == 'keepalive':
+      return
+    
     # sets the url and decode the json received through websocket
     url = 'https://ajax.googleapis.com/ajax/services/search/news'
     request = escape.json_decode(message)
